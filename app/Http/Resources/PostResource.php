@@ -17,12 +17,14 @@ class PostResource extends JsonResource
         // Carbon::createFromDate()->shortRelativeDiffForHumans()
         return [
             'type'           => 'Post',
+            'id'             => $this->id,
             'title'          => $this->title,
-            'excerpt'        => $this->excerpt,
-            'content'        => $this->content,
+            'content'        => $this->when($this->resource->content !== null, $this->content),
             'author'         => new UserResource($this->whenLoaded('author')),
+            'likes_count'    => $this->likes_count,
             'comments_count' => $this->comments_count,
-            'published_at'   => $this->created_at->shortRelativeDiffForHumans()
+            'published_at'   => $this->created_at->shortRelativeDiffForHumans(),
+            'is_liked_by'    => $this->isLikedBy()
         ];
     }
 }

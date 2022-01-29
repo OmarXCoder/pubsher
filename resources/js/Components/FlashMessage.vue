@@ -2,7 +2,8 @@
     <transition name="slide" @after-leave="$emit('hide', message)">
         <div
             v-show="show"
-            :class="['st-callout', `st-callout--${message.type}`]"
+            class="st-callout p-3"
+            :class="colorClass"
             @mouseover="mouseIsOver = true"
             @mouseleave="mouseIsOver = false"
         >
@@ -13,7 +14,7 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 
 const props = defineProps({
     message: {
@@ -36,6 +37,16 @@ const hide = () => {
     }, props.message.timeout);
 };
 
+const colorClass = computed(() => {
+    return {
+        primary: 'bg-primary-100',
+        success: 'bg-success-100',
+        warning: 'bg-warning-100',
+        danger: 'bg-danger-100',
+        info: 'bg-info-100',
+    }[props.message.type];
+});
+
 onMounted(() => {
     show.value = true;
 
@@ -43,16 +54,17 @@ onMounted(() => {
 });
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
 .st-callout {
     box-shadow: 0 4px 4px #ccc;
     border-radius: 10px;
     margin-bottom: 12px;
     width: 100%;
     transform: translateX(0);
-    &:last-of-type {
-        margin-bottom: 0;
-    }
+}
+
+.st-callout:last-of-type {
+    margin-bottom: 0;
 }
 
 .slide-enter-active,

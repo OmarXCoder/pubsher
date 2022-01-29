@@ -16,10 +16,9 @@ class TopicFactory extends Factory
         return [
             'name' => $name = $this->faker->words(2, true),
             'slug' => Str::slug($name),
-            'meta' => json_encode([
-                'color'     => $this->faker->hexColor(),
-                'thumbnail' => $this->faker->imageUrl(),
-            ]),
+            'meta' => [
+                'color' => $this->faker->hexColor(),
+            ],
         ];
     }
 }

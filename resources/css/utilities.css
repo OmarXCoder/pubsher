@@ -1,0 +1,7 @@
+.text-light {
+    @apply text-gray-500;
+}
+
+.text-muted {
+    @apply text-gray-400;
+}

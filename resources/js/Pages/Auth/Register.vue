@@ -1,100 +1,104 @@
 <template>
     <Head title="Register" />
 
-    <form class="auth-form" @submit.prevent="submit">
-        <div class="text-center mb-4">
-            <Link href="/" class="text-decoration-none">
-                <i class="fab fa-wordpress fa-2x me-1"></i>
-                <span class="fs-4">Inertia App</span>
-            </Link>
-        </div>
-        <div class="mb-3">
+    <OxValidationErrors class="mb-4" />
+
+    <form @submit.prevent="submit">
+        <div>
             <label for="name" class="form-label">Name</label>
             <input
-                type="text"
                 id="name"
-                class="form-control"
-                placeholder="Full Name"
+                type="text"
+                class="mt-1 form-control"
                 v-model="form.name"
+                required
+                autofocus
+                autocomplete="name"
             />
-            <div v-if="form.errors.name" class="text-danger mt-2">
-                {{ form.errors.name }}
-            </div>
         </div>
-        <div class="mb-3">
+
+        <div class="mt-4">
             <label for="email" class="form-label">Email</label>
             <input
-                type="text"
                 id="email"
-                class="form-control"
-                placeholder="Email address"
+                type="email"
+                class="mt-1 form-control"
                 v-model="form.email"
+                required
+                autocomplete="username"
             />
-            <div v-if="form.errors.email" class="text-danger mt-2">
-                {{ form.errors.email }}
-            </div>
         </div>
-        <div class="mb-3">
+
+        <div class="mt-4">
             <label for="password" class="form-label">Password</label>
             <input
-                type="password"
                 id="password"
-                class="form-control"
-                placeholder="Password"
-                v-model="form.password"
-            />
-            <div v-if="form.errors.password" class="text-danger mt-2">
-                {{ form.errors.password }}
-            </div>
-        </div>
-        <div class="mb-3">
-            <label for="password_confirmation" class="form-label"
-                >Confirm Password</label
-            >
-            <input
                 type="password"
-                id="password_confirmation"
-                class="form-control"
-                placeholder="Password"
-                v-model="form.password_confirmation"
+                class="mt-1 form-control"
+                v-model="form.password"
+                required
+                autocomplete="new-password"
             />
-            <div
-                v-if="form.errors.password_confirmation"
-                class="text-danger mt-2"
-            >
-                {{ form.errors.password_confirmation }}
-            </div>
         </div>
-        <div class="mb-3">
-            <Link href="login" class="fw-lighter">
-                Already have an account?
+
+        <div class="mt-4">
+            <label for="password_confirmation" class="form-label">Confirm Password</label>
+            <input
+                id="password_confirmation"
+                type="password"
+                class="mt-1 form-control"
+                v-model="form.password_confirmation"
+                required
+                autocomplete="new-password"
+            />
+        </div>
+
+        <div class="flex items-center justify-end mt-4">
+            <Link :href="route('login')" class="underline text-sm text-gray-600 hover:text-gray-900">
+                Already registered?
             </Link>
+
+            <button
+                type="submit"
+                class="btn btn-md btn-dark ml-4"
+                :class="{ 'opacity-25': form.processing }"
+                :disabled="form.processing"
+            >
+                Register
+            </button>
         </div>
-        <input
-            type="submit"
-            value="Create account"
-            class="btn btn-primary w-100"
-        />
     </form>
 </template>
+
 <script>
-import GuestLayout from "@/Layouts/GuestLayout.vue";
+import OxGuestLayout from '@/Layouts/Guest.vue';
+import OxValidationErrors from '@/Components/ValidationErrors.vue';
+
 export default {
-    layout: GuestLayout,
-};
-</script>
+    layout: OxGuestLayout,
 
-<script setup>
-import { useForm } from "@inertiajs/inertia-vue3";
+    components: {
+        OxValidationErrors,
+    },
 
-const form = useForm({
-    name: "",
-    email: "",
-    password: "",
-    password_confirmation: "",
-});
+    data() {
+        return {
+            form: this.$inertia.form({
+                name: '',
+                email: '',
+                password: '',
+                password_confirmation: '',
+                terms: false,
+            }),
+        };
+    },
 
-const submit = () => {
-    form.submit("post", "register");
+    methods: {
+        submit() {
+            this.form.post(this.route('register'), {
+                onFinish: () => this.form.reset('password', 'password_confirmation'),
+            });
+        },
+    },
 };
 </script>

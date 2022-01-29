@@ -1,5 +1,4 @@
 const mix = require('laravel-mix');
-const path = require('path');
 
 /*
  |--------------------------------------------------------------------------
@@ -13,15 +12,14 @@ const path = require('path');
  */
 
 mix.js('resources/js/app.js', 'public/js')
-    // .js('resources/js/public.js', 'public/js')
-    .sass('resources/scss/vendor.scss', 'public/css')
-    .sass('resources/scss/app.scss', 'public/css')
-    // .sass('resources/scss/public.scss', 'public/css')
     .vue()
-    .alias({
-        '@': path.join(__dirname, 'resources/js'),
-        ziggy: path.resolve('vendor/tightenco/ziggy/dist/vue'), // or 'vendor/tightenco/ziggy/dist/vue' if you're using the Vue plugin
-    });
-// .postCss('resources/css/app.css', 'public/css', [
-//     //
-// ]);
+    .postCss('resources/css/app.css', 'public/css', [
+        require('postcss-import'),
+        require('tailwindcss'),
+        require('autoprefixer'),
+    ])
+    .webpackConfig(require('./webpack.config'));
+
+if (mix.inProduction()) {
+    mix.version();
+}

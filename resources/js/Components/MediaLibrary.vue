@@ -8,7 +8,7 @@
     </slot>
 
     <!-- Modal -->
-    <StModal
+    <OxModal
         :id="id"
         :show="isOpen"
         title="Media Library"
@@ -106,12 +106,12 @@
             <button class="btn btn-secondary" @click="cancel">Cancel</button>
             <button class="btn btn-primary" @click="ok" :disabled="selectedFiles.length === 0">Select And Close</button>
         </template>
-    </StModal>
+    </OxModal>
 </template>
 
 <script setup>
 import FileDropzone from '@/Components/FileDropzone.vue';
-import StModal from '@/Components/StModal.vue';
+import OxModal from '@/Components/OxModal.vue';
 import PaginationLinks from '@/Components/PaginationLinks.vue';
 import ImgCheckbox from '@/Components/ImgCheckbox.vue';
 import { ref } from 'vue';

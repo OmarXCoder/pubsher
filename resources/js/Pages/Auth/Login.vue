@@ -1,47 +1,100 @@
 <template>
-    <Head title="Login" />
+    <Head title="Log in" />
 
-    <form class="auth-form" @submit.prevent="submit">
-        <div class="text-center mb-4">
-            <Link href="/" class="text-decoration-none">
-                <i class="fab fa-wordpress fa-2x me-1"></i>
-                <span class="fs-4">Inertia App</span>
-            </Link>
-        </div>
-        <div class="mb-3">
+    <OxValidationErrors class="mb-4" />
+
+    <div v-if="status" class="mb-4 font-medium text-sm text-green-600">
+        {{ status }}
+    </div>
+
+    <form @submit.prevent="submit">
+        <div>
             <label for="email" class="form-label">Email</label>
-            <input type="text" id="email" class="form-control" placeholder="Email address" v-model="form.email" />
-            <div v-if="form.errors.email" class="text-danger mt-2">
-                {{ form.errors.email }}
-            </div>
+            <input
+                id="email"
+                type="email"
+                class="mt-1 form-control"
+                v-model="form.email"
+                required
+                autofocus
+                autocomplete="username"
+            />
         </div>
-        <div class="mb-3">
+
+        <div class="mt-4">
             <label for="password" class="form-label">Password</label>
-            <input type="password" id="password" class="form-control" placeholder="Password" v-model="form.password" />
-            <div v-if="form.errors.password" class="text-danger mt-2">
-                {{ form.errors.password }}
-            </div>
+            <input
+                id="password"
+                type="password"
+                class="mt-1 form-control"
+                v-model="form.password"
+                required
+                autocomplete="current-password"
+            />
         </div>
-        <div class="mb-3">
-            <Link href="register" class="fw-lighter"> Don't have an account? </Link>
+
+        <div class="block mt-4">
+            <label class="flex items-center">
+                <OxCheckbox name="remember" v-model:checked="form.remember" />
+                <span class="ml-2 text-sm text-gray-600">Remember me</span>
+            </label>
         </div>
-        <input type="submit" value="Login" class="btn btn-primary w-100" />
+
+        <div class="flex items-center justify-end mt-4">
+            <Link
+                v-if="canResetPassword"
+                :href="route('password.request')"
+                class="underline text-sm text-gray-600 hover:text-gray-900"
+            >
+                Forgot your password?
+            </Link>
+
+            <button
+                type="submit"
+                class="btn btn-md btn-dark ml-4"
+                :class="{ 'opacity-25': form.processing }"
+                :disabled="form.processing"
+            >
+                Log in
+            </button>
+        </div>
     </form>
 </template>
 
 <script>
-import GuestLayout from '@/Layouts/GuestLayout.vue';
+import OxCheckbox from '@/Components/OxCheckbox.vue';
+import OxGuestLayout from '@/Layouts/Guest.vue';
+import OxValidationErrors from '@/Components/ValidationErrors.vue';
+
 export default {
-    layout: GuestLayout,
-};
-</script>
+    layout: OxGuestLayout,
 
-<script setup>
-import { useForm } from '@inertiajs/inertia-vue3';
+    components: {
+        OxCheckbox,
+        OxValidationErrors,
+    },
 
-const form = useForm({ email: '', password: '' });
+    props: {
+        canResetPassword: Boolean,
+        status: String,
+    },
 
-const submit = () => {
-    form.submit('post', 'login');
+    data() {
+        return {
+            form: this.$inertia.form({
+                email: '',
+                password: '',
+                remember: false,
+            }),
+        };
+    },
+
+    methods: {
+        submit() {
+            this.form.post(this.route('login'), {
+                onFinish: () => this.form.reset('password'),
+            });
+        },
+    },
 };
 </script>

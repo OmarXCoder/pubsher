@@ -1,68 +1,90 @@
 <template>
-    <nav class="app-navbar navbar navbar-expand-lg navbar-dark">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="#">Pubsher</a>
-            <button
-                class="navbar-toggler"
-                type="button"
-                data-bs-toggle="collapse"
-                data-bs-target="#siteNavbarContent"
-                aria-controls="siteNavbarContent"
-                aria-expanded="false"
-                aria-label="Toggle navigation"
-            >
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="siteNavbarContent">
-                <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
-                    <li class="nav-item">
-                        <a class="nav-link px-4 active" aria-current="page" href="#">HOME</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link px-4">TOPICS</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link px-4" href="#">MY FEED</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link px-4">MY WALL</a>
-                    </li>
-                </ul>
-                <ul class="navbar-nav mb-2 mb-lg-0">
-                    <li class="nav-item">
-                        <Link class="nav-link px-3" href="/posts/create">
-                            <i class="fas fa-lg fa-plus"></i>
-                        </Link>
-                    </li>
-
-                    <li class="nav-item dropdown">
-                        <a
-                            class="nav-link px-3 dropdown-toggle"
-                            href="#"
-                            id="userDropdown"
-                            role="button"
-                            data-bs-toggle="dropdown"
-                            aria-expanded="false"
-                        >
-                            <img class="avatar avatar--xs" :src="$page.props.auth.user.avatar" alt="" />
-                            <strong class="me-1">
-                                {{ $page.props.auth.user.name }}
-                            </strong>
-                        </a>
-                        <div class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                            <Link href="/profile" class="dropdown-item">
-                                <i class="fad fa-fw fa-user me-2"></i>
-                                <span>Profile</span>
-                            </Link>
-                            <hr class="dropdown-divider" />
-                            <Link class="dropdown-item" href="/logout" method="post" as="button">
-                                <i class="fad fa-fw fa-lock-open me-2"></i>
-                                <span>Logout</span>
-                            </Link>
-                        </div>
-                    </li>
-                </ul>
+    <nav class="relative bg-white border-b border-b-gray-200">
+        <OxContainer class="flex items-center justify-between md:justify-start py-2">
+            <div class="flex">
+                <Link :href="route('home')">
+                    <ApplicationLogo class="h-8 w-auto sm:h-10" />
+                </Link>
             </div>
-        </div>
+            <div class="-mr-2 -my-2 md:hidden">
+                <button
+                    type="button"
+                    class="bg-white rounded-md p-2 inline-flex items-center justify-center text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-500"
+                    aria-expanded="false"
+                >
+                    <span class="sr-only">Open menu</span>
+                    <!-- Heroicon name: outline/menu -->
+                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M4 6h16M4 12h16M4 18h16"
+                        />
+                    </svg>
+                </button>
+            </div>
+            <div class="hidden md:flex ml-4">
+                <form class="w-96">
+                    <input type="search" class="form-control" placeholder="Search..." />
+                </form>
+            </div>
+            <div v-if="$page.props.auth.user" class="hidden md:flex items-center justify-end md:flex-1 lg:w-0">
+                <div class="flex items-center">
+                    <Link :href="route('posts.create')" as="button" class="btn btn-md btn-outline-primary">
+                        Create Post
+                    </Link>
+                    <div class="ml-6 relative">
+                        <OxDropdown align="right" width="48">
+                            <template #trigger>
+                                <OxAvatar
+                                    size="8"
+                                    :src="$page.props.auth.user.avatar_url"
+                                    class="cursor-pointer border border-primary-300 rounded-full transition-colors hover:ring hover:ring-primary-200 hover:ring-opacity-50"
+                                />
+                            </template>
+
+                            <template #content>
+                                <OxDropdownLink
+                                    :href="route('profile', $page.props.auth.user)"
+                                    as="button"
+                                    class="hover:underline"
+                                >
+                                    <h5 class="text-gray-800 text-lg leading-5 font-medium">
+                                        {{ $page.props.auth.user.name }}
+                                    </h5>
+                                    <span class="text-xs text-gray-500">@{{ $page.props.auth.user.username }}</span>
+                                </OxDropdownLink>
+                                <hr class="my-2" />
+                                <OxDropdownLink :href="route('profile', $page.props.auth.user)" as="button">
+                                    Dashboard
+                                </OxDropdownLink>
+                                <OxDropdownLink :href="route('posts.create')" as="button"> Create Post </OxDropdownLink>
+                                <OxDropdownLink :href="route('profile', $page.props.auth.user)" as="button">
+                                    Settings
+                                </OxDropdownLink>
+                                <hr class="my-2" />
+                                <OxDropdownLink :href="route('logout')" method="post" as="button">
+                                    Log Out
+                                </OxDropdownLink>
+                            </template>
+                        </OxDropdown>
+                    </div>
+                </div>
+            </div>
+            <div v-else class="hidden md:flex items-center justify-end md:flex-1 lg:w-0">
+                <Link :href="route('login')" class="btn btn-md btn-ghost">Log in</Link>
+                <Link :href="route('register')" class="btn btn-md btn-primary ml-4">Sign up</Link>
+            </div>
+        </OxContainer>
     </nav>
 </template>
+
+<script setup>
+import OxAvatar from '@/Components/OxAvatar.vue';
+import OxNavLink from '@/Components/OxNavLink.vue';
+import OxDropdown from '@/Components/OxDropdown.vue';
+import OxDropdownLink from '@/Components/OxDropdownLink.vue';
+import OxContainer from '@/Components/OxContainer.vue';
+import ApplicationLogo from '@/Components/AppLogo.vue';
+</script>

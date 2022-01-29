@@ -57,7 +57,7 @@ window.mitt.on('flash', ({ type, message }) => {
 });
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
 .app-flash {
     position: fixed;
     bottom: 24px;

@@ -17,10 +17,9 @@ class PostFactory extends Factory
         return [
             'title'     => $title= $this->faker->sentence(),
             'slug'      => Str::slug($title),
-            'excerpt'   => $this->faker->paragraph(4),
             'content'   => $this->faker->paragraphs(4, true),
             'author_id' => User::factory(),
-            'status'    => $this->faker->randomElement(['draft', 'published', 'in-review']),
+            'status'    => $this->faker->randomElement(['draft', 'published']),
         ];
     }
 }

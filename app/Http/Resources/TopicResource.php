@@ -14,12 +14,14 @@ class TopicResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'type'      => 'Topic',
-            'id'        => $this->id,
-            'name'      => $this->name,
-            'slug'      => $this->slug,
-            'color'     => $this->meta['color'],
-            'thumbnail' => $this->meta['thumbnail'],
+            'type'            => 'Topic',
+            'id'              => $this->id,
+            'name'            => $this->name,
+            'slug'            => $this->slug,
+            'avatar_url'      => $this->avatar_url,
+            'color'           => $this->meta->color ?? null,
+            'followers_count' => $this->followers_count,
+            'is_followed_by'  => $this->isFollowedBy()
         ];
     }
 }

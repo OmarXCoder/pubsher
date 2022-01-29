@@ -1,14 +1,19 @@
 <?php
 namespace App\Models;
 
+use App\Traits\CanFollowOtherUsers;
+use App\Traits\Followable;
+use App\Traits\HasAvatar;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable, Followable, CanFollowOtherUsers, HasAvatar;
 
     /**
      * The attributes that are mass assignable.
@@ -18,6 +23,7 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
+        'username',
         'password',
     ];
 
@@ -39,4 +45,28 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    /**
+     * The accessors to append to the model's array form.
+     *
+     * @var array
+     */
+    protected $appends = [
+        'avatar_url',
+    ];
+
+    public function getRouteKeyName()
+    {
+        return 'username';
+    }
+
+    public function posts(): HasMany
+    {
+        return $this->hasMany(Post::class, 'author_id');
+    }
+
+    public function followedTopics(): MorphToMany
+    {
+        return $this->morphedByMany(Topic::class, 'followable');
+    }
 }

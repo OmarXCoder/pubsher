@@ -18,11 +18,9 @@ class CreatePostsTable extends Migration
             $table->id();
             $table->string('title');
             $table->string('slug')->unique();
-            $table->text('excerpt')->nullable();
             $table->longText('content')->nullable();
             $table->string('status', 32)->default(Post::STATUS_DRAFT);
             $table->foreignId('author_id')->constrained('users')->cascadeOnDelete();
-            $table->foreignId('topic_id')->constrained('topics')->cascadeOnDelete();
             $table->softDeletes();
             $table->timestamps();
         });

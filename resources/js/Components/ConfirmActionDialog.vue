@@ -1,15 +1,17 @@
 <template>
-    <StModal id="confirmActionDialog" :show="show" :title="actionTitle" static>
-        {{ content }}
+    <OxModal :show="show" :title="actionTitle" size="lg" @close="show = false" :static="!config.closeable">
+        <div v-html="content"></div>
         <template #footer>
-            <button :class="cancelClass" v-text="config.cancelText" @click="cancel" ref="cancelBtnRef" />
-            <button :class="confirmClass" v-text="config.okText" @click="confirm" ref="okBtnRef" />
+            <div class="space-x-3">
+                <button :class="cancelClass" v-text="config.cancelText" @click="cancel" ref="cancelBtnRef" />
+                <button :class="confirmClass" v-text="config.okText" @click="confirm" ref="okBtnRef" />
+            </div>
         </template>
-    </StModal>
+    </OxModal>
 </template>
 
 <script setup>
-import StModal from '@/Components/StModal.vue';
+import OxModal from '@/Components/OxModal.vue';
 import { computed, ref, watch } from 'vue';
 
 const okBtnRef = ref(null);
@@ -20,15 +22,16 @@ const actionTitle = ref('');
 const content = ref('');
 const config = ref({
     okVariant: 'primary',
-    cancelVariant: 'secondary',
+    cancelVariant: 'ghost',
     okText: 'Ok',
     cancelText: 'Cancel',
     buttonSize: 'md',
     focusOnCancel: false,
+    closeable: false,
 });
 
-const cancelClass = computed(() => `btn btn-${config.value.cancelVariant} btn-${config.value.buttonSize}`);
-const confirmClass = computed(() => `btn btn-${config.value.okVariant} btn-${config.value.buttonSize}`);
+const cancelClass = computed(() => `btn btn-md btn-${config.value.cancelVariant}`);
+const confirmClass = computed(() => `btn btn-md btn-${config.value.okVariant}`);
 
 const cancel = () => {
     show.value = false;
