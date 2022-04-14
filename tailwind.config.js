@@ -22,7 +22,7 @@ module.exports = {
             white: colors.white,
             gray: colors.gray,
             info: colors.sky,
-            primary: colors.indigo,
+            primary: colors.blue,
             success: colors.green,
             danger: colors.red,
             warning: colors.yellow,
